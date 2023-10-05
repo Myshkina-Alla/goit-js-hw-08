@@ -1,44 +1,23 @@
-import SimpleLightbox from 'simplelightbox/dist/simple-lightbox.esm.js';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-// Add imports above this line
 import { galleryItems } from './gallery-items';
-// Change code below this line
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 console.log(galleryItems);
 
 const container = document.querySelector('.gallery');
 const markup = galleryItems
   .map(
-    ({ original, preview, description }) =>
+    item =>
       `<li class="gallery__item">
-  <a class="gallery__link" href="${original}">
-    <img
-      class="gallery__image"
-      src="${preview}"
-      data-source="${original}"
-      alt="${description}"
-    />
-  </a>
+   <a class="gallery__link" href="${item.original}">
+      <img class="gallery__image" src="${item.preview}" alt="${item.description}" />
+   </a>
 </li>`
   )
   .join('');
 
 container.insertAdjacentHTML('beforeend', markup);
 
-container.addEventListener('click', event => {
-  event.preventDefault();
-
-  if (event.target.classList.contains('gallery__image')) {
-    const imageUrl = event.target.dataset.source;
-
-    const lightbox = basicLightbox.create(`
-            <img src="${imageUrl}" alt="Image">
-        `);
-    lightbox.show();
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        lightbox.close();
-      }
-    });
-  }
+const lightBox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
 });
