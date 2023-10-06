@@ -4,7 +4,7 @@ const form = document.querySelector('.feedback-form');
 const emailInput = form.querySelector('input[name="email"]');
 const messageTextarea = form.querySelector('textarea[name="message"]');
 
-const saveFormState = throttle(() => {
+const saveToLocalStorage = throttle(() => {
   const formData = {
     email: emailInput.value,
     message: messageTextarea.value,
@@ -13,14 +13,13 @@ const saveFormState = throttle(() => {
 }, 500);
 
 form.addEventListener('input', () => {
-  saveFormState();
+  saveToLocalStorage();
 });
 
 window.addEventListener('load', () => {
-  const storedFormData = localStorage.getItem('feedback-form-state');
-
-  if (storedFormData) {
-    const parsedData = JSON.parse(storedFormData);
+  const savedData = localStorage.getItem('feedback-form-state');
+  if (savedData) {
+    const parsedData = JSON.parse(savedData);
     emailInput.value = parsedData.email;
     messageTextarea.value = parsedData.message;
   }
@@ -29,13 +28,13 @@ window.addEventListener('load', () => {
 form.addEventListener('submit', event => {
   event.preventDefault();
 
-  localStorage.removeItem('feedback-form-state');
-  emailInput.value = '';
-  messageTextarea.value = '';
-
   const formData = {
     email: emailInput.value,
     message: messageTextarea.value,
   };
   console.log(formData);
+
+  localStorage.removeItem('feedback-form-state');
+  emailInput.value = '';
+  messageTextarea.value = '';
 });
